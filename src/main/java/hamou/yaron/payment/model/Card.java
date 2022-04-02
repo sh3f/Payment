@@ -1,16 +1,31 @@
 package hamou.yaron.payment.model;
 
+import hamou.yaron.payment.model.validation.CardExpiration;
+import org.hibernate.validator.constraints.LuhnCheck;
+
+import javax.validation.constraints.*;
 import java.util.Objects;
 
 public class Card {
 
+    @NotEmpty(message = "pan is required")
+    @Pattern(regexp = "[\\d]{16}", message = "pan should be 16 digits long")
+    @LuhnCheck(message = "pan should pass a Luhn check")
     private String pan;
 
+    @CardExpiration(message = "expiry should be 4 digits long and not be in the past")
     private String expiry;
 
+    @NotEmpty(message = "cvv is required")
     private String cvv;
 
     public Card() {
+    }
+
+    public Card(String pan, String expiry, String cvv) {
+        this.pan = pan;
+        this.expiry = expiry;
+        this.cvv = cvv;
     }
 
     public String getPan() {

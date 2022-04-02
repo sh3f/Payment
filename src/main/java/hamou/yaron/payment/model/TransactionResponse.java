@@ -2,7 +2,7 @@ package hamou.yaron.payment.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -10,9 +10,9 @@ public class TransactionResponse {
 
     private boolean approved;
 
-    private List<String> errors;
+    private Map<String, String> errors;
 
-    public TransactionResponse(boolean approved, List<String> errors) {
+    public TransactionResponse(boolean approved, Map<String, String> errors) {
         this.approved = approved;
         this.errors = errors;
     }
@@ -25,11 +25,11 @@ public class TransactionResponse {
         this.approved = approved;
     }
 
-    public List<String> getErrors() {
+    public Map<String, String> getErrors() {
         return errors;
     }
 
-    public void setErrors(List<String> errors) {
+    public void setErrors(Map<String, String> errors) {
         this.errors = errors;
     }
 

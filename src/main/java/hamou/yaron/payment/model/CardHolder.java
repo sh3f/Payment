@@ -1,14 +1,24 @@
 package hamou.yaron.payment.model;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 public class CardHolder {
 
+    @NotEmpty(message = "name is required")
     private String name;
 
+    @NotEmpty(message = "email is required")
+    @Email(message = "email should have a valid format")
     private String email;
 
     public CardHolder() {
+    }
+
+    public CardHolder(String name, String email) {
+        this.name = name;
+        this.email = email;
     }
 
     public String getName() {

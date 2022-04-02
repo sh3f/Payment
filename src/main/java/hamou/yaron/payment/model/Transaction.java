@@ -1,24 +1,38 @@
 package hamou.yaron.payment.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.*;
 import java.util.Objects;
 
 public class Transaction {
 
+    @NotEmpty(message = "invoice is required")
     private String invoice;
 
+    @Positive(message = "amount should be a positive integer")
     private int amount;
 
+    @NotEmpty(message = "currency is required")
     private String currency;
 
-    private CardHolder cardHolder;
+    @Valid
+    @JsonProperty(value = "cardholder")
+    private CardHolder cardHolder = new CardHolder();
 
-    private Card card;
+    @Valid
+    private Card card = new Card();
 
     public Transaction() {
     }
 
-    public Transaction(String invoice) {
+    public Transaction(String invoice, int amount, String currency, CardHolder cardHolder, Card card) {
         this.invoice = invoice;
+        this.amount = amount;
+        this.currency = currency;
+        this.cardHolder = cardHolder;
+        this.card = card;
     }
 
     public String getInvoice() {
