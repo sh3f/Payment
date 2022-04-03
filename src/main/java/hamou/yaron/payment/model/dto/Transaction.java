@@ -1,4 +1,4 @@
-package hamou.yaron.payment.model;
+package hamou.yaron.payment.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -27,7 +27,15 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(String invoice, int amount, String currency, CardHolder cardHolder, Card card) {
+    public Transaction(String invoice) {
+        this.invoice = invoice;
+    }
+
+    public Transaction(String invoice,
+                       int amount,
+                       String currency,
+                       CardHolder cardHolder,
+                       Card card) {
         this.invoice = invoice;
         this.amount = amount;
         this.currency = currency;
@@ -80,7 +88,11 @@ public class Transaction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transaction transaction = (Transaction) o;
-        return amount == transaction.amount && Objects.equals(invoice, transaction.invoice) && Objects.equals(currency, transaction.currency) && Objects.equals(cardHolder, transaction.cardHolder) && Objects.equals(card, transaction.card);
+        return amount == transaction.amount &&
+                Objects.equals(invoice, transaction.invoice) &&
+                Objects.equals(currency, transaction.currency) &&
+                Objects.equals(cardHolder, transaction.cardHolder) &&
+                Objects.equals(card, transaction.card);
     }
 
     @Override

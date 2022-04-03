@@ -1,7 +1,8 @@
 package hamou.yaron.payment.controller;
 
-import hamou.yaron.payment.model.Transaction;
+import hamou.yaron.payment.model.dto.Transaction;
 import hamou.yaron.payment.model.TransactionResponse;
+import hamou.yaron.payment.service.TransactionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,9 +15,15 @@ import java.util.Map;
 @RestController
 public class TransactionController {
 
+    TransactionService transactionService;
+
+    public TransactionController(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
+
     @PostMapping(value = "/transaction", consumes = "application/json")
     TransactionResponse processTransaction(@Valid @RequestBody Transaction transaction) {
-        return new TransactionResponse(true, null);
+        return transactionService.save(transaction);
     }
 
     @GetMapping("/transaction/{invoice}")

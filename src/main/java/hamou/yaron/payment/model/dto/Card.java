@@ -1,4 +1,4 @@
-package hamou.yaron.payment.model;
+package hamou.yaron.payment.model.dto;
 
 import hamou.yaron.payment.model.validation.CardExpiration;
 import org.hibernate.validator.constraints.LuhnCheck;
@@ -57,7 +57,9 @@ public class Card {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Card card = (Card) o;
-        return Objects.equals(pan, card.pan) && Objects.equals(expiry, card.expiry) && Objects.equals(cvv, card.cvv);
+        return Objects.equals(pan, card.pan) &&
+                Objects.equals(expiry, card.expiry) &&
+                Objects.equals(cvv, card.cvv);
     }
 
     @Override
