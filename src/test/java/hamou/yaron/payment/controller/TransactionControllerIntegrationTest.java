@@ -1,10 +1,21 @@
 package hamou.yaron.payment.controller;
 
+import hamou.yaron.payment.model.TransactionResponse;
+import hamou.yaron.payment.model.dto.Transaction;
+import hamou.yaron.payment.service.TransactionService;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -13,16 +24,23 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest
+@ExtendWith(MockitoExtension.class)
 class TransactionControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private TransactionService service;
+
     @Test
     public void whenPostRequestToTransaction_thenCorrectResponse() throws Exception {
         String expiry = now();
+
+        Mockito.when(service.save(any())).thenReturn(new TransactionResponse(true, null));
 
         String transaction = "" +
                 "{" +
@@ -265,6 +283,17 @@ class TransactionControllerIntegrationTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.approved", Is.is(false)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors.*", hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors.expiry", Is.is("expiry should be 4 digits long and not be in the past")));
+    }
+
+    @Test
+    public void whenPostRequestToGetTransactionAndTransactionExists_thenCorrectResponse() throws Exception {
+        Transaction transaction = new Transaction("1");
+
+        Mockito.when(service.getByInvoice(any())).thenReturn(transaction);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/transaction/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("{\"invoice\":\"1\",\"amount\":0,\"currency\":null,\"card\":{\"pan\":null,\"expiry\":null,\"cvv\":null},\"cardholder\":{\"name\":null,\"email\":null}}"));
     }
 
     private static String monthAgo() {

@@ -1,5 +1,6 @@
 package hamou.yaron.payment.service;
 
+import hamou.yaron.payment.controller.TransactionDoesNotExist;
 import hamou.yaron.payment.dao.TransactionDao;
 import hamou.yaron.payment.model.TransactionResponse;
 import hamou.yaron.payment.model.dto.Transaction;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +50,7 @@ class TransactionServiceTest {
         Transaction transaction = new Transaction("1");
 
         Map<String, String> errors = new HashMap<>();
-        errors.put("transaction " + transaction.getInvoice() + " ", " has already been processed");
+        errors.put("transaction " + transaction.getInvoice(), "has already been processed");
         TransactionResponse expected = new TransactionResponse(false, errors);
 
         Mockito.when(dao.save(eq(transaction)))
@@ -60,5 +62,33 @@ class TransactionServiceTest {
 
         Mockito.verify(dao, Mockito.times(2)).save(eq(transaction));
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenGetting_thenReturnCorrectResponse() {
+        Transaction transaction = new Transaction("1");
+
+        Mockito.when(dao.getByInvoice(eq("1")))
+                .thenReturn(transaction);
+
+        Transaction actual = service.getByInvoice("1");
+
+        Mockito.verify(dao).getByInvoice(any());
+        assertEquals(transaction, actual);
+    }
+
+    @Test
+    public void whenGettingAndInvoiceDoesNotExist_thenReturnCorrectResponse() {
+        Mockito.when(dao.getByInvoice(eq("1")))
+                .thenReturn(null);
+
+        Exception exception = assertThrows(TransactionDoesNotExist.class, () -> service.getByInvoice("1"));
+
+        String expectedMessage = "transaction 1 does not exist";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+        Mockito.verify(dao).getByInvoice(any());
     }
 }

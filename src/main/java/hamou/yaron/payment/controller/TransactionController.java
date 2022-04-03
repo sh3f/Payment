@@ -28,7 +28,7 @@ public class TransactionController {
 
     @GetMapping("/transaction/{invoice}")
     Transaction getTransaction(@PathVariable String invoice) {
-        return new Transaction();
+        return transactionService.getByInvoice(invoice);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -49,5 +49,11 @@ public class TransactionController {
             return fieldName.toLowerCase();
         }
         return fieldName.toLowerCase().substring(lastIndexOfDot + 1);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(TransactionDoesNotExist.class)
+    public String handleTransactionDoesNotExistExceptions(TransactionDoesNotExist ex) {
+        return ex.getMessage();
     }
 }

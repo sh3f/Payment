@@ -1,5 +1,6 @@
 package hamou.yaron.payment.service;
 
+import hamou.yaron.payment.controller.TransactionDoesNotExist;
 import hamou.yaron.payment.dao.TransactionDao;
 import hamou.yaron.payment.model.dto.Transaction;
 import hamou.yaron.payment.model.TransactionResponse;
@@ -20,9 +21,16 @@ public class TransactionService {
     public TransactionResponse save(Transaction transaction) {
         if (!transactionDao.save(transaction)) {
             Map<String, String> errors = new HashMap<>();
-            errors.put("transaction " + transaction.getInvoice() + " ", " has already been processed");
+            errors.put("transaction " + transaction.getInvoice(), "has already been processed");
             return new TransactionResponse(false, errors);
         }
         return new TransactionResponse(true, null);
+    }
+
+    public Transaction getByInvoice(String invoice) {
+        Transaction transaction = transactionDao.getByInvoice(invoice);
+        if (transaction == null)
+            throw new TransactionDoesNotExist("transaction " + invoice + " does not exist");
+        return transaction;
     }
 }
