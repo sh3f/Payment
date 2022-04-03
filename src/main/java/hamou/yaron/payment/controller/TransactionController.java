@@ -1,6 +1,6 @@
 package hamou.yaron.payment.controller;
 
-import hamou.yaron.payment.model.dto.Transaction;
+import hamou.yaron.payment.model.Transaction;
 import hamou.yaron.payment.model.TransactionResponse;
 import hamou.yaron.payment.service.TransactionService;
 import org.springframework.http.HttpStatus;

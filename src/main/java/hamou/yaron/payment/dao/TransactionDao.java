@@ -1,6 +1,6 @@
 package hamou.yaron.payment.dao;
 
-import hamou.yaron.payment.model.dto.Transaction;
+import hamou.yaron.payment.model.Transaction;
 
 public interface TransactionDao {
 

@@ -1,11 +1,13 @@
-package hamou.yaron.payment.model.dto;
+package hamou.yaron.payment.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.util.Objects;
 
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Transaction {
 
     @NotEmpty(message = "invoice is required")
@@ -41,6 +43,14 @@ public class Transaction {
         this.currency = currency;
         this.cardHolder = cardHolder;
         this.card = card;
+    }
+
+    public Transaction(Transaction other) {
+        this.invoice = other.invoice;
+        this.amount = other.amount;
+        this.currency = other.currency;
+        this.card = new Card(other.card.getPan(), other.card.getExpiry(), other.card.getCvv());
+        this.cardHolder = new CardHolder(other.cardHolder.getName(), other.cardHolder.getEmail());
     }
 
     public String getInvoice() {

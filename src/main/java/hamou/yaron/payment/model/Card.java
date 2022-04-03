@@ -1,4 +1,4 @@
-package hamou.yaron.payment.model.dto;
+package hamou.yaron.payment.model;
 
 import hamou.yaron.payment.model.validation.CardExpiration;
 import org.hibernate.validator.constraints.LuhnCheck;

@@ -1,4 +1,4 @@
-package hamou.yaron.payment.model.dto;
+package hamou.yaron.payment.model;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
