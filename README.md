@@ -1,4 +1,4 @@
-# Foobar
+# Payment
 
 Payment is a gateway front end for processing transactions.
 
@@ -6,12 +6,8 @@ Payment is a gateway front end for processing transactions.
 
 Use maven to install Payment.
 
-```bash
-mvnw package
-```
-
 ## Usage
 
-```java
+```bash
 java -jar target/payment-0.0.1-SNAPSHOT.jar
 ```
