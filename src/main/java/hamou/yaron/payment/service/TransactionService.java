@@ -1,5 +1,6 @@
 package hamou.yaron.payment.service;
 
+import hamou.yaron.payment.audit.AuditTransaction;
 import hamou.yaron.payment.controller.TransactionDoesNotExist;
 import hamou.yaron.payment.dao.TransactionDao;
 import hamou.yaron.payment.crypt.Crypt;
@@ -15,15 +16,21 @@ public class TransactionService {
 
     TransactionDao transactionDao;
     Crypt crypt;
+    AuditTransaction audit;
 
-    public TransactionService(TransactionDao transactionDao, Crypt crypt) {
+    public TransactionService(TransactionDao transactionDao, Crypt crypt, AuditTransaction audit) {
         this.transactionDao = transactionDao;
         this.crypt = crypt;
+        this.audit = audit;
     }
 
     public TransactionResponse save(Transaction transaction) {
         Transaction transactionToBeSaved = new Transaction(transaction);
         encrypt(transactionToBeSaved);
+
+        mask(transaction);
+        audit.auditMaskedTransaction(transaction);
+
         if (!transactionDao.save(transactionToBeSaved)) {
             Map<String, String> errors = new HashMap<>();
             errors.put("transaction " + transactionToBeSaved.getInvoice(), "has already been processed");
@@ -55,6 +62,7 @@ public class TransactionService {
         transaction.getCardHolder().setName("******");
         transaction.getCard().setExpiry("****");
         transaction.getCard().setPan("************" + transaction.getCard().getPan().substring(12));
+        transaction.getCard().setCvv(null);
     }
 
     public void decrypt(Transaction transaction) {

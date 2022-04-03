@@ -1,5 +1,6 @@
 package hamou.yaron.payment.service;
 
+import hamou.yaron.payment.audit.AuditTransaction;
 import hamou.yaron.payment.controller.TransactionDoesNotExist;
 import hamou.yaron.payment.crypt.Base64Crypt;
 import hamou.yaron.payment.crypt.Crypt;
@@ -28,6 +29,9 @@ class TransactionServiceTest {
     @Mock
     TransactionDao dao;
 
+    @Mock
+    AuditTransaction audit;
+
     TransactionService service;
 
     Crypt crypt;
@@ -38,7 +42,7 @@ class TransactionServiceTest {
     @BeforeEach
     void setUp() {
         crypt = new Base64Crypt();
-        service = new TransactionService(dao, crypt);
+        service = new TransactionService(dao, crypt, audit);
     }
 
     @Test
@@ -115,9 +119,10 @@ class TransactionServiceTest {
 
         Transaction savedTransaction = transactionCaptor.getValue();
 
-        assertEquals(crypt.encrypt(transaction.getCardHolder().getName()), savedTransaction.getCardHolder().getName());
-        assertEquals(crypt.encrypt(transaction.getCard().getPan()), savedTransaction.getCard().getPan());
-        assertEquals(crypt.encrypt(transaction.getCard().getExpiry()), savedTransaction.getCard().getExpiry());
+        Transaction expected = getTransaction();
+        assertEquals(crypt.encrypt(expected.getCardHolder().getName()), savedTransaction.getCardHolder().getName());
+        assertEquals(crypt.encrypt(expected.getCard().getPan()), savedTransaction.getCard().getPan());
+        assertEquals(crypt.encrypt(expected.getCard().getExpiry()), savedTransaction.getCard().getExpiry());
         assertNull(savedTransaction.getCard().getCvv());
     }
 
