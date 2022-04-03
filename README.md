@@ -2,9 +2,9 @@
 
 Payment is a gateway front end for processing transactions.
 
-## Installation
+## Compiling
 
-Use maven to install Payment.
+Use maven to compile Payment.
 
 ## Usage
 
